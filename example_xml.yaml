@@ -1,0 +1,5 @@
+- type: file_source
+  config:
+    path: data/sample.xml
+- type: xml_parser
+- type: print

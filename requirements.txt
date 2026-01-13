@@ -1,0 +1,6 @@
+requests
+pyyaml
+rich
+xmltodict
+beautifulsoup4
+lxml

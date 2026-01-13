@@ -1,0 +1,11 @@
+- type: file_source
+  config:
+    path: data/sample.html
+- type: html_selector
+  config:
+    selector: "li.feature"
+- type: print
+- type: html_selector
+  config:
+    selector: "p.article"
+- type: print

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+  <title>T-Pipes News</title>
+  <link>https://www.example.com</link>
+  <description>T-Pipes is awesome</description>
+  <item>
+    <title>XML Support Added</title>
+    <link>https://www.example.com/xml</link>
+    <description>Now supporting XML parsing via xmltodict</description>
+  </item>
+  <item>
+    <title>HTML Scraping Live</title>
+    <link>https://www.example.com/html</link>
+    <description>Extract data with CSS selectors</description>
+  </item>
+</channel>
+</rss>

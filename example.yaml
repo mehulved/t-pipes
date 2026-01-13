@@ -1,0 +1,11 @@
+- type: http_source
+  config:
+    url: https://jsonplaceholder.typicode.com/users
+- type: json_parser
+- type: print
+- type: filter
+  config:
+    key: website
+    op: contains
+    value: .org
+- type: print

@@ -1,0 +1,15 @@
+# System and Environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+# IDE and Editors
+.vscode/
+.idea/
+
+# Application Data
+.cache/
+.tpipes_registry.json
