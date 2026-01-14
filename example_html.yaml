@@ -3,9 +3,5 @@
     path: data/sample.html
 - type: html_selector
   config:
-    selector: "li.feature"
-- type: print
-- type: html_selector
-  config:
-    selector: "p.article"
+    selector: "li.feature, p.article"
 - type: print

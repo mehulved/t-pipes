@@ -1,10 +1,12 @@
 import unittest
-from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export
-from tpipes.sources import CsvSource
+from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export, Print
+from tpipes.sources import CsvSource, FileSource, HttpSource
 import os
 import csv
 import json
 import shutil
+from unittest.mock import patch, MagicMock
+
 
 
 class TestBlocks(unittest.TestCase):
@@ -112,6 +114,67 @@ class TestBlocks(unittest.TestCase):
         
         # Cleanup
         shutil.rmtree('output_test')
+
+    def test_export_xml_html(self):
+        os.makedirs('output_test_2', exist_ok=True)
+        data = {'id': 1, 'name': 'test'}
+        
+        # XML Export
+        xml_path = 'output_test_2/out.xml'
+        exp_xml = Export({'path': xml_path, 'format': 'xml'})
+        exp_xml.process(data, None)
+        
+        with open(xml_path, 'r') as f:
+            content = f.read()
+        self.assertIn('<root>', content)
+        self.assertIn('<name>test</name>', content)
+
+        # HTML Export
+        html_path = 'output_test_2/out.html'
+        exp_html = Export({'path': html_path, 'format': 'html'})
+        # HTML export expects list of dicts for table
+        list_data = [data]
+        exp_html.process(list_data, None)
+        
+        with open(html_path, 'r') as f:
+            content = f.read()
+        self.assertIn('<table', content)
+        self.assertIn('<td>test</td>', content)
+        
+        # Cleanup
+        shutil.rmtree('output_test_2')
+
+    def test_file_source(self):
+        os.makedirs('data_test_2', exist_ok=True)
+        path = 'data_test_2/test.txt'
+        with open(path, 'w') as f:
+            f.write("Hello World")
+            
+        block = FileSource({'path': path})
+        result = block.process(None, None)
+        self.assertEqual(result, "Hello World")
+        
+        shutil.rmtree('data_test_2')
+
+    @patch('requests.request')
+    def test_http_source(self, mock_get):
+        mock_response = MagicMock()
+        mock_response.text = "API Data"
+        mock_response.raise_for_status.return_value = None
+        mock_get.return_value = mock_response
+        
+        block = HttpSource({'url': 'http://test.com'})
+        result = block.process(None, None)
+        self.assertEqual(result, "API Data")
+        mock_get.assert_called_with('GET', 'http://test.com')
+
+    def test_print(self):
+        # Print is output only, just verify pass-through
+        block = Print()
+        data = {'test': 123}
+        result = block.process(data, None)
+        self.assertEqual(result, data)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -76,12 +76,12 @@ class Export(Block):
                 json.dump(data, f, indent=2)
                 
         elif fmt == 'xml':
-            if not isinstance(data, dict):
-                 # xmltodict unparse requires a dict with a single root
-                 # If list, we need to wrap it
+            to_write = data
+            if isinstance(data, dict):
+                 if len(data.keys()) != 1:
+                     to_write = {'root': data}
+            elif isinstance(data, list):
                  to_write = {'root': {'item': data}}
-            else:
-                 to_write = data
             
             with open(path, 'w', encoding='utf-8') as f:
                 xmltodict.unparse(to_write, output=f, pretty=True)

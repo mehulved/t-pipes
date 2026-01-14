@@ -49,6 +49,7 @@ def run_pipeline(path: str, refresh: bool = False):
         print(f"An error occurred: {e}")
         import traceback
         traceback.print_exc()
+        sys.exit(1)
 
 def main():
     registry = PipelineRegistry()
