@@ -5,6 +5,8 @@ from rich.console import Console
 from rich.table import Table
 from rich import print as rprint
 import xmltodict
+import csv
+import os
 from bs4 import BeautifulSoup
 
 class JsonParser(Block):
@@ -43,6 +45,86 @@ class HtmlSelector(Block):
         # Extract text from selected elements
         results = [tag.get_text(strip=True) for tag in soup.select(selector)]
         return results
+
+
+class Export(Block):
+    cacheable = False  # Export is a side-effect, usually we want it to run? Or maybe cache logic handles it?
+                       # Actually, if we cache the output (which is the data passed through), 
+                       # we might skip the file writing if we just load from cache.
+                       # So Export block should NOT be effectively cached if the side effect is crucial.
+                       # However, our runner logic uses `cacheable` to decide if we LOOKUP cache. 
+                       # If we set cacheable=False, it runs process().
+    
+    def process(self, data: Any, context: Any) -> Any:
+        # Pass-through block: returns data as-is, but writes to file.
+        
+        fmt = self.config.get('format', 'json').lower()
+        path = self.config.get('path')
+        
+        if not path:
+             raise ValueError("Export block requires 'path'")
+        
+        # Ensure dir exists
+        os.makedirs(os.path.dirname(os.path.abspath(path)) or '.', exist_ok=True)
+
+        if fmt == 'json':
+            context_dict = data
+            if not isinstance(context_dict, (dict, list)):
+                 # try to wrap?
+                 pass
+            with open(path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+                
+        elif fmt == 'xml':
+            if not isinstance(data, dict):
+                 # xmltodict unparse requires a dict with a single root
+                 # If list, we need to wrap it
+                 to_write = {'root': {'item': data}}
+            else:
+                 to_write = data
+            
+            with open(path, 'w', encoding='utf-8') as f:
+                xmltodict.unparse(to_write, output=f, pretty=True)
+                
+        elif fmt == 'csv':
+            if not isinstance(data, list):
+                 raise ValueError("CSV export requires a list of dicts")
+            if not data:
+                 # Empty list, just create empty file
+                 with open(path, 'w') as f: pass
+            else:
+                 keys = data[0].keys()
+                 with open(path, 'w', newline='', encoding='utf-8') as f:
+                     writer = csv.DictWriter(f, fieldnames=keys)
+                     writer.writeheader()
+                     writer.writerows(data)
+                     
+        elif fmt == 'html':
+            # Basic HTML table export
+             if not isinstance(data, list):
+                 content = f"<pre>{data}</pre>"
+             else:
+                 # Create a simple table
+                 if not data:
+                     content = "<p>No data</p>"
+                 else:
+                     keys = data[0].keys()
+                     rows = []
+                     rows.append("<tr>" + "".join(f"<th>{k}</th>" for k in keys) + "</tr>")
+                     for item in data:
+                         rows.append("<tr>" + "".join(f"<td>{item.get(k, '')}</td>" for k in keys) + "</tr>")
+                     content = f"<table border='1'>{''.join(rows)}</table>"
+            
+             html = f"<html><body>{content}</body></html>"
+             with open(path, 'w', encoding='utf-8') as f:
+                 f.write(html)
+        
+        else:
+             raise ValueError(f"Unsupported format: {fmt}")
+             
+        rprint(f"[green]Exported data to {path} ({fmt})[/green]")
+        return data
+
 
 
 class Filter(Block):

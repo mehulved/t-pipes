@@ -3,17 +3,19 @@ import yaml
 import sys
 import os
 from tpipes.runner import PipelineRunner
-from tpipes.sources import HttpSource, FileSource
-from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector
+from tpipes.sources import HttpSource, FileSource, CsvSource
+from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector, Export
 from tpipes.registry import PipelineRegistry
 
 BLOCK_REGISTRY = {
     'http_source': HttpSource,
     'file_source': FileSource,
+    'csv_source': CsvSource,
     'json_parser': JsonParser,
     'xml_parser': XmlParser,
     'html_selector': HtmlSelector,
     'filter': Filter,
+    'export': Export,
     'print': Print
 }
 

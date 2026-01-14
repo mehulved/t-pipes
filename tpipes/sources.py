@@ -1,6 +1,7 @@
 import requests
 import os
-from typing import Any
+import csv
+from typing import Any, List, Dict
 from .core import Block
 
 class HttpSource(Block):
@@ -26,3 +27,17 @@ class FileSource(Block):
 
         with open(path, 'r') as f:
             return f.read()
+
+class CsvSource(Block):
+    def process(self, data: Any, context: Any) -> Any:
+        path = self.config.get('path')
+        if not path:
+             raise ValueError("CsvSource requires 'path' in config")
+        
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"File not found: {path}")
+
+        with open(path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            return list(reader)
+

@@ -13,3 +13,4 @@ __pycache__/
 # Application Data
 .cache/
 .tpipes_registry.json
+output/

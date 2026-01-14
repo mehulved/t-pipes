@@ -50,6 +50,16 @@ Reads data from a local file.
     path: ./data.json
 ```
 
+**`csv_source`**
+Reads data from a CSV file into a list of dictionaries.
+- `path`: (Required) Path to the CSV file.
+
+```yaml
+- type: csv_source
+  config:
+    path: ./data.csv
+```
+
 #### Processors
 
 **`json_parser`**
@@ -100,6 +110,18 @@ Visualizes the data in the terminal. Prints tables for lists of dictionaries, or
 
 ```yaml
 - type: print
+```
+
+**`export`**
+Exports the current data to a file.
+- `format`: (Optional) `json` (default), `xml`, `html`, or `csv`.
+- `path`: (Required) Path to save the file.
+
+```yaml
+- type: export
+  config:
+    format: csv
+    path: ./output.csv
 ```
 
 ## specific examples

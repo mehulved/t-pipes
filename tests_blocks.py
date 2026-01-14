@@ -1,5 +1,11 @@
 import unittest
-from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter
+from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export
+from tpipes.sources import CsvSource
+import os
+import csv
+import json
+import shutil
+
 
 class TestBlocks(unittest.TestCase):
     
@@ -61,6 +67,51 @@ class TestBlocks(unittest.TestCase):
         ]
         result = block.process(data, None)
         self.assertEqual(len(result), 2)
+
+    def test_csv_source(self):
+        # Create dummy csv
+        os.makedirs('data_test', exist_ok=True)
+        path = 'data_test/test.csv'
+        with open(path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['id', 'val'])
+            writer.writerow(['1', 'a'])
+            writer.writerow(['2', 'b'])
+            
+        block = CsvSource({'path': path})
+        result = block.process(None, None)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0]['id'], '1')
+        self.assertEqual(result[0]['val'], 'a')
+        
+        # Cleanup
+        shutil.rmtree('data_test')
+
+    def test_export_json_csv(self):
+        os.makedirs('output_test', exist_ok=True)
+        data = [{'id': 1, 'name': 'test'}]
+        
+        # JSON Export
+        json_path = 'output_test/out.json'
+        exp_json = Export({'path': json_path, 'format': 'json'})
+        exp_json.process(data, None)
+        
+        with open(json_path, 'r') as f:
+            loaded = json.load(f)
+        self.assertEqual(loaded, data)
+
+        # CSV Export
+        csv_path = 'output_test/out.csv'
+        exp_csv = Export({'path': csv_path, 'format': 'csv'})
+        exp_csv.process(data, None)
+        
+        with open(csv_path, 'r') as f:
+            content = f.read()
+        self.assertIn('id,name', content)
+        self.assertIn('1,test', content)
+        
+        # Cleanup
+        shutil.rmtree('output_test')
 
 if __name__ == '__main__':
     unittest.main()

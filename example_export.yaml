@@ -1,0 +1,20 @@
+- type: csv_source
+  config:
+    path: data/sample.csv
+- type: print
+- type: export
+  config:
+    format: json
+    path: output/users.json
+- type: export
+  config:
+    format: html
+    path: output/users.html
+- type: export
+  config:
+    format: xml
+    path: output/users.xml
+- type: export
+  config:
+    format: csv
+    path: output/users_export.csv
