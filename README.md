@@ -1,3 +1,14 @@
+```text
+ _____           ______ _                 
+|_   _|          | ___ (_)                
+  | |    ______  | |_/ /_ _ __   ___  ___ 
+  | |   |______| |  __/| | '_ \ / _ \/ __|
+  | |            | |   | | |_) |  __/\__ \
+  |_|            \_|   |_| .__/ \___||___/
+                         | |              
+                         |_|              
+```
+
 # T-Pipes (Terminal Pipes)
 
 A terminal-based data pipeline tool similar to Yahoo Pipes. Chain together blocks to fetch, process, and visualize data.
