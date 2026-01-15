@@ -7,3 +7,4 @@
     - [x] specific command to valid run a specific pipe from the registry.
 - [x] **Data Export**: Support exporting pipeline data to JSON, XML, HTML, and CSV files.
 - [x] **CSV Support**: Support CSV files as input sources.
+- [ ] **Packaging**: Create a pip package.
