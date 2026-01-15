@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSL Reference | T-Pipes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="logo.png" alt="T-Pipes Logo" class="project-logo">
+                </a>
+            </div>
+            <h1>DSL Reference</h1>
+            <p>Comprehensive guide to T-Pipes blocks and configuration.</p>
+            <a href="index.html" class="cta-button"
+                style="background-color: #f7f9fa; color: var(--primary-color); border: 1px solid var(--primary-color);">Back
+                to Home</a>
+        </header>
+
+        <section id="sources">
+            <h2>Sources</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span class="window-title">http_source</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Fetches data from a URL.</p>
+                    <ul>
+                        <li><code>url</code>: (Required) The URL to fetch.</li>
+                        <li><code>method</code>: (Optional) HTTP method (default: <code>GET</code>).</li>
+                    </ul>
+                </div>
+                <pre><code>- type: http_source
+  config:
+    url: https://api.example.com/data
+    method: GET</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">file_source</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Reads data from a local JSON file.</p>
+                    <ul>
+                        <li><code>path</code>: (Required) Path to the file.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: file_source
+  config:
+    path: ./data.json</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">csv_source</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Reads data from a CSV file into a list of dictionaries.</p>
+                    <ul>
+                        <li><code>path</code>: (Required) Path to the CSV file.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: csv_source
+  config:
+    path: ./data.csv</code></pre>
+            </div>
+        </section>
+
+        <section id="processors">
+            <h2>Processors</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">json_parser</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Parses a JSON string into a Python list/dictionary.</p>
+                </div>
+                <pre><code>- type: json_parser</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">xml_parser</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Parses XML string into a Python dictionary.</p>
+                </div>
+                <pre><code>- type: xml_parser</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">html_selector</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Extracts text from HTML using CSS selectors.</p>
+                    <ul>
+                        <li><code>selector</code>: (Required) CSS selector string (e.g., <code>div.content > p</code>).
+                        </li>
+                    </ul>
+                </div>
+                <pre><code>- type: html_selector
+  config:
+     selector: "h1.title"</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">filter</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Filters a list of dictionaries based on a criteria.</p>
+                    <ul>
+                        <li><code>key</code>: (Required) The dictionary key to check.</li>
+                        <li><code>value</code>: (Required) The value to compare against.</li>
+                        <li><code>op</code>: (Optional) <code>eq</code> (equality) or <code>contains</code>. Default:
+                            <code>eq</code>.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: filter
+  config:
+    key: category
+    op: contains
+    value: tech</code></pre>
+            </div>
+        </section>
+
+        <section id="output">
+            <h2>Output</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">print</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Visualizes the data in the terminal.</p>
+                </div>
+                <pre><code>- type: print</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">export</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Exports the current data to a file.</p>
+                    <ul>
+                        <li><code>path</code>: (Required) Path to save the file.</li>
+                        <li><code>format</code>: (Optional) <code>json</code>, <code>xml</code>, <code>html</code>, or
+                            <code>csv</code>.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: export
+  config:
+    format: csv
+    path: ./output.csv</code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 T-Pipes Project. <a href="https://github.com/yourusername/t-pipes">View on GitHub</a></p>
+        </footer>
+    </div>
+</body>
+
+</html>
