@@ -199,3 +199,17 @@ footer {
     color: #888;
     background: white;
 }
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.project-logo {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(96, 1, 210, 0.3)); /* Purple glow */
+    transition: transform 0.3s ease;
+}
+
+.project-logo:hover {
+    transform: scale(1.1) rotate(-5deg);
+}
