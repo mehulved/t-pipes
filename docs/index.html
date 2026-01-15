@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Pipes | Terminal Pipes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span class="window-title">t-pipes_logo.ascii</span>
+                </div>
+                <!-- ASCII Art PRE Block -->
+                <pre class="ascii-art">
+ _____           ______ _                 
+|_   _|          | ___ (_)                
+  | |    ______  | |_/ /_ _ __   ___  ___ 
+  | |   |______| |  __/| | '_ \ / _ \/ __|
+  | |            | |   | | |_) |  __/\__ \
+  |_|            \_|   |_| .__/ \___||___/
+                         | |              
+                         |_|              
+                </pre>
+            </div>
+            <h1>T-Pipes</h1>
+            <p>A terminal-based data pipeline tool for the modern geek.</p>
+            <a href="https://github.com/yourusername/t-pipes" class="cta-button">View on GitHub</a>
+        </header>
+
+        <section id="features">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Modular Blocks</h3>
+                    <p>Chain sources, processors, and outputs to build powerful workflows.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Terminal Visualization</h3>
+                    <p>View structured data tables and raw output instantly in your shell.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Export Options</h3>
+                    <p>Seamlessly export your data to <code>JSON</code>, <code>CSV</code>, <code>XML</code>, and
+                        <code>HTML</code>.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Registry</h3>
+                    <p>Save and re-run your favorite pipelines with a simple command.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="usage">
+            <h2>Usage</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span class="window-title">bash</span>
+                </div>
+                <pre><code># Run a pipeline
+python main.py example.yaml
+
+# Register a pipeline
+python main.py register example.yaml --name mypipe
+
+# Run registered pipeline
+python main.py run mypipe</code></pre>
+            </div>
+        </section>
+
+        <section id="dsl">
+            <h2>DSL Example</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span class="window-title">pipeline.yaml</span>
+                </div>
+                <pre><code>- type: http_source
+  config:
+    url: https://api.example.com/data
+- type: json_parser
+- type: filter
+  config:
+    key: category
+    value: tech
+- type: print</code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 T-Pipes Project. Built with &hearts; and ASCII.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
