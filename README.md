@@ -101,9 +101,28 @@ Extracts text from HTML using CSS selectors (using `BeautifulSoup`).
 
 **`filter`**
 Filters a list of dictionaries based on a criteria.
-- `key`: (Required) The dictionary key to check.
-- `value`: (Required) The value to compare against.
-- `op`: (Optional) The operation: `eq` (equality) or `contains`. Default is `eq`.
+- `key`: (Required) The dictionary key to check. Nested keys supported (e.g., `user.address.city`).
+- `value`: (Required) The value to compare against (ignored if `op` is `exists`).
+- `op`: (Optional) `eq` (equality), `contains`, or `exists`. Default is `eq`.
+
+```yaml
+- type: filter
+  config:
+    key: category
+    op: contains
+    value: tech
+```
+
+**`pick`**
+Extracts specific fields from the data.
+- `key`: (Optional) Single nested key to extract as value (e.g., `rates.INR`).
+- `keys`: (Optional) List of nested keys to extract into a new dictionary.
+
+```yaml
+- type: pick
+  config:
+    key: rates.INR
+```
 
 ```yaml
 - type: filter

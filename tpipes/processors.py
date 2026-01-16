@@ -87,8 +87,10 @@ class Export(Block):
                 xmltodict.unparse(to_write, output=f, pretty=True)
                 
         elif fmt == 'csv':
+            if isinstance(data, dict):
+                 data = [data]
             if not isinstance(data, list):
-                 raise ValueError("CSV export requires a list of dicts")
+                 raise ValueError("CSV export requires a list of dicts (or a single dict)")
             if not data:
                  # Empty list, just create empty file
                  with open(path, 'w') as f: pass
@@ -127,12 +129,36 @@ class Export(Block):
 
 
 
+def get_nested_value(data: Any, path: str) -> Any:
+    keys = path.split('.')
+    current = data
+    for k in keys:
+        if isinstance(current, dict):
+            current = current.get(k)
+        elif isinstance(current, list):
+            # Optional: handle list index access like users.0.name?
+            # For simplicity, let's stick to dict keys for now, or maybe simple integer support
+            try:
+                idx = int(k)
+                if 0 <= idx < len(current):
+                    current = current[idx]
+                else:
+                    return None
+            except ValueError:
+                return None
+        else:
+            return None
+        
+        if current is None:
+            return None
+    return current
+
 class Filter(Block):
     def process(self, data: Any, context: Any) -> Any:
         # Expects specific structure: list of dicts
         key = self.config.get('key')
         value = self.config.get('value')
-        op = self.config.get('op', 'eq') # eq, contains
+        op = self.config.get('op', 'eq') # eq, contains, exists
         
         if not isinstance(data, list):
             # If it's a dict, maybe we filter keys? For now assume list of items
@@ -140,9 +166,17 @@ class Filter(Block):
             
         filtered = []
         for item in data:
-            if not isinstance(item, dict):
+            if not isinstance(item, (dict, list)):
                 continue
-            item_val = item.get(key)
+                
+            item_val = get_nested_value(item, key)
+            
+            # Handle 'exists' op specifically
+            if op == 'exists':
+                if item_val is not None:
+                    filtered.append(item)
+                continue
+
             if item_val is None:
                 continue
             
@@ -153,6 +187,32 @@ class Filter(Block):
                 if str(value).lower() in str(item_val).lower():
                      filtered.append(item)
         return filtered
+
+class Pick(Block):
+    def process(self, data: Any, context: Any) -> Any:
+        # Extracts specific fields from the data
+        # config: key (string) or keys (list of strings)
+        key = self.config.get('key')
+        keys = self.config.get('keys')
+        
+        if not key and not keys:
+            raise ValueError("Pick block requires 'key' or 'keys' in config")
+            
+        def extract(item):
+            if key:
+                return get_nested_value(item, key)
+            else:
+                # Return a new dict with only selected keys
+                # We flatten the keys for the new dict? or keep structure?
+                # "user.name" -> {"user.name": "Bob"} seems safer for flattening
+                return {k: get_nested_value(item, k) for k in keys}
+
+        if isinstance(data, list):
+            return [extract(item) for item in data]
+        elif isinstance(data, (dict, list)):
+            return extract(data)
+        
+        return data
 
 class Print(Block):
     cacheable = False

@@ -4,7 +4,7 @@ import sys
 import os
 from tpipes.runner import PipelineRunner
 from tpipes.sources import HttpSource, FileSource, CsvSource
-from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector, Export
+from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector, Export, Pick
 from tpipes.registry import PipelineRegistry
 
 BLOCK_REGISTRY = {
@@ -15,6 +15,7 @@ BLOCK_REGISTRY = {
     'xml_parser': XmlParser,
     'html_selector': HtmlSelector,
     'filter': Filter,
+    'pick': Pick,
     'export': Export,
     'print': Print
 }

@@ -124,17 +124,34 @@
                 <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
                     <p>Filters a list of dictionaries based on a criteria.</p>
                     <ul>
-                        <li><code>key</code>: (Required) The dictionary key to check.</li>
-                        <li><code>value</code>: (Required) The value to compare against.</li>
-                        <li><code>op</code>: (Optional) <code>eq</code> (equality) or <code>contains</code>. Default:
-                            <code>eq</code>.</li>
+                        <li><code>key</code>: (Required) Key to check. Supports nested keys (e.g.,
+                            <code>user.data.id</code>).</li>
+                        <li><code>value</code>: (Required) Value to compare against.</li>
+                        <li><code>op</code>: (Optional) <code>eq</code>, <code>contains</code>, or <code>exists</code>.
+                            Default: <code>eq</code>.</li>
                     </ul>
                 </div>
                 <pre><code>- type: filter
   config:
-    key: category
-    op: contains
-    value: tech</code></pre>
+    key: user.profile.role
+    op: eq
+    value: admin</code></pre>
+            </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">pick</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Extracts specific fields from the data.</p>
+                    <ul>
+                        <li><code>key</code>: Single nested key to extract as a value.</li>
+                        <li><code>keys</code>: List of nested keys to extract into a new object.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: pick
+  config:
+    key: rates.INR</code></pre>
             </div>
         </section>
 
@@ -159,7 +176,8 @@
                     <ul>
                         <li><code>path</code>: (Required) Path to save the file.</li>
                         <li><code>format</code>: (Optional) <code>json</code>, <code>xml</code>, <code>html</code>, or
-                            <code>csv</code>.</li>
+                            <code>csv</code>.
+                        </li>
                     </ul>
                 </div>
                 <pre><code>- type: export

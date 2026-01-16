@@ -1,0 +1,31 @@
+- type: http_source
+  config:
+    url: https://api.exchangerate-api.com/v4/latest/USD
+- type: json_parser
+- type: pick
+  config:
+    keys:
+     - base
+     - date
+     - rates.INR
+# Test JSON Export
+- type: export
+  config:
+    format: json
+    path: ./output/test.json
+# Test CSV Export
+- type: export
+  config:
+    format: csv
+    path: ./output/test.csv
+# Test XML Export
+- type: export
+  config:
+    format: xml
+    path: ./output/test.xml
+# Test HTML Export
+- type: export
+  config:
+    format: html
+    path: ./output/test.html
+- type: print
