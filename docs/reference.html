@@ -79,6 +79,30 @@
             </div>
         </section>
 
+        <section id="flow">
+            <h2>Flow Control</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">concat</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Merges results from multiple sources into a single list. Supports sub-pipelines.</p>
+                    <ul>
+                        <li><code>sources</code>: (Required) List of sources to merge.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: concat
+  config:
+    sources:
+      - type: csv_source
+        config: { path: data.csv }
+      - steps:
+         - type: http_source
+           config: { url: ... }
+         - type: json_parser</code></pre>
+            </div>
+        </section>
+
         <section id="processors">
             <h2>Processors</h2>
             <div class="terminal-window">
@@ -125,7 +149,8 @@
                     <p>Filters a list of dictionaries based on a criteria.</p>
                     <ul>
                         <li><code>key</code>: (Required) Key to check. Supports nested keys (e.g.,
-                            <code>user.data.id</code>).</li>
+                            <code>user.data.id</code>).
+                        </li>
                         <li><code>value</code>: (Required) Value to compare against.</li>
                         <li><code>op</code>: (Optional) <code>eq</code>, <code>contains</code>, or <code>exists</code>.
                             Default: <code>eq</code>.</li>

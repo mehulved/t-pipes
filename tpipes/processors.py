@@ -9,6 +9,58 @@ import csv
 import os
 from bs4 import BeautifulSoup
 
+class Concat(Block):
+    cacheable = False
+    
+    def process(self, data: Any, context: Any) -> Any:
+        # Concatenates results from multiple sources defined in config
+        sources_conf = self.config.get('sources', [])
+        if not sources_conf:
+             return []
+        
+        # Delayed import to avoid circular dependency
+        from .runner import PipelineRunner
+        
+        result_list = []
+        
+        for source_def in sources_conf:
+            source_result = None
+            
+            # Option 1: Full sub-pipeline
+            if 'steps' in source_def:
+                # Run the sub-pipeline
+                # Note: We create a new runner sharing the same block registry
+                # We do NOT share the context cache dir logic 1:1 perhaps? 
+                # Or just reuse the registry and let it create its own context/cache?
+                # For simplicity, let it Create its own context for now.
+                # ideally we pass the existing context but Runner creates a new one.
+                # We can't easily inject context into Runner yet without modifying Runner.
+                # So we just pass registry.
+                runner = PipelineRunner(source_def['steps'], context.block_registry)
+                # Run it (we might want verbose=False to reduce noise)
+                source_result = runner.run(verbose=False)
+                
+            # Option 2: Single block shorthand
+            elif 'type' in source_def:
+                stype = source_def.get('type')
+                sconfig = source_def.get('config', {})
+                
+                if stype not in context.block_registry:
+                    rprint(f"[red]Unknown block type in concat source: {stype}[/red]")
+                    continue
+                    
+                block_cls = context.block_registry[stype]
+                block = block_cls(sconfig)
+                source_result = block.process(None, context)
+            
+            # Normalize and append
+            if isinstance(source_result, list):
+                result_list.extend(source_result)
+            elif source_result is not None:
+                result_list.append(source_result)
+                
+        return result_list
+
 class JsonParser(Block):
     def process(self, data: Any, context: Any) -> Any:
         if isinstance(data, str):

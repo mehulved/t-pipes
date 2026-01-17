@@ -71,6 +71,22 @@ Reads data from a CSV file into a list of dictionaries.
     path: ./data.csv
 ```
 
+**`concat`**
+Merges results from multiple sources into a single list.
+- `sources`: (Required) List of source definitions. Each source can be a single block (`type` + `config`) or a sub-pipeline (`steps`).
+
+```yaml
+- type: concat
+  config:
+    sources:
+      - type: csv_source
+        config: { path: ./data.csv }
+      - steps:
+          - type: http_source
+            config: { url: https://api.example.com/data }
+          - type: json_parser
+```
+
 #### Processors
 
 **`json_parser`**
