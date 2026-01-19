@@ -32,7 +32,22 @@ python main.py run mypipe
 python main.py run mypipe --refresh
 ```
 
-## DSL Reference
+### Cache Management
+T-Pipes maintains a cache for each pipeline to avoid redundant processing. You can share this cache between machines.
+
+**Export Cache:**
+Create a zip file containing the cache (and optionally the source YAML) for a specific pipeline.
+```bash
+python main.py cache export <pipeline_name_or_path> <output.zip>
+```
+
+**Import Cache:**
+Restore cache from a zip file.
+```bash
+python main.py cache import <input.zip>
+```
+
+### DSL Reference
 
 Pipelines are defined in YAML format as a list of steps. Each step has a `type` and an optional `config`.
 

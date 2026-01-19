@@ -7,16 +7,19 @@ from .core import Block
 import importlib
 
 class PipelineContext:
-    def __init__(self, base_dir: str = ".", block_registry: Dict[str, Any] = None):
-        self.cache_dir = os.path.join(base_dir, '.cache')
+    def __init__(self, base_dir: str = ".", block_registry: Dict[str, Any] = None, pipeline_name: str = "default"):
+        self.base_dir = base_dir
+        self.pipeline_name = pipeline_name
+        self.cache_dir = os.path.join(base_dir, '.cache', pipeline_name)
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
         self.block_registry = block_registry or {}
 
 class PipelineRunner:
-    def __init__(self, pipeline_config: List[Dict[str, Any]], block_registry: Dict[str, Any]):
+    def __init__(self, pipeline_config: List[Dict[str, Any]], block_registry: Dict[str, Any], pipeline_name: str = "default", context: PipelineContext = None):
         self.config = pipeline_config
-        self.context = PipelineContext(block_registry=block_registry)
+        # reuse context if provided (for sub-pipelines), else create new
+        self.context = context or PipelineContext(block_registry=block_registry, pipeline_name=pipeline_name)
         self.block_registry = block_registry
 
     def _get_cache_key(self, block_name: str, config: Dict, input_data: Any) -> str:

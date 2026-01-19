@@ -28,7 +28,7 @@ class Concat(Block):
             
             # Option 1: Full sub-pipeline
             if 'steps' in source_def:
-                runner = PipelineRunner(source_def['steps'], context.block_registry)
+                runner = PipelineRunner(source_def['steps'], context.block_registry, context=context)
                 source_result = runner.run(verbose=False)
                 
             # Option 2: Single block shorthand
@@ -72,13 +72,13 @@ class Mesh(Block):
             # mapping: key: [list of steps]
             if isinstance(source_def, list):
                  # Assume it's a pipeline definition (list of steps)
-                 runner = PipelineRunner(source_def, context.block_registry)
+                 runner = PipelineRunner(source_def, context.block_registry, context=context)
                  source_result = runner.run(verbose=False)
             
             elif isinstance(source_def, dict):
                 # Single block or explicit 'steps' dict
                 if 'steps' in source_def:
-                    runner = PipelineRunner(source_def['steps'], context.block_registry)
+                    runner = PipelineRunner(source_def['steps'], context.block_registry, context=context)
                     source_result = runner.run(verbose=False)
                 elif 'type' in source_def:
                     stype = source_def.get('type')
