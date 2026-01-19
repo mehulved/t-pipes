@@ -101,6 +101,28 @@
            config: { url: ... }
          - type: json_parser</code></pre>
             </div>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">mesh</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Aggregates results from multiple sources into a structured dictionary.</p>
+                    <ul>
+                        <li><code>mapping</code>: (Required) Key-value map of result fields to source definitions.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: mesh
+  config:
+    mapping:
+      users:
+        - type: csv_source
+          config: { path: users.csv }
+      rates:
+        steps:
+         - type: http_source
+           config: { url: ... }
+         - type: json_parser</code></pre>
+            </div>
         </section>
 
         <section id="processors">

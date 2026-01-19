@@ -87,7 +87,23 @@ Merges results from multiple sources into a single list.
           - type: json_parser
 ```
 
-#### Processors
+**`mesh`**
+Aggregates results from multiple sources into a structured dictionary.
+- `mapping`: (Required) Dictionary where keys are the result fields and values are source definitions (single block or sub-pipeline).
+
+```yaml
+- type: mesh
+  config:
+    mapping:
+      users:
+        - type: csv_source
+          config: { path: ./data.csv }
+      meta:
+        steps:
+          - type: http_source
+            config: { url: ... }
+          - type: json_parser
+```
 
 **`json_parser`**
 Parses a JSON string into a Python list/dictionary.

@@ -28,16 +28,7 @@ class Concat(Block):
             
             # Option 1: Full sub-pipeline
             if 'steps' in source_def:
-                # Run the sub-pipeline
-                # Note: We create a new runner sharing the same block registry
-                # We do NOT share the context cache dir logic 1:1 perhaps? 
-                # Or just reuse the registry and let it create its own context/cache?
-                # For simplicity, let it Create its own context for now.
-                # ideally we pass the existing context but Runner creates a new one.
-                # We can't easily inject context into Runner yet without modifying Runner.
-                # So we just pass registry.
                 runner = PipelineRunner(source_def['steps'], context.block_registry)
-                # Run it (we might want verbose=False to reduce noise)
                 source_result = runner.run(verbose=False)
                 
             # Option 2: Single block shorthand
@@ -60,6 +51,50 @@ class Concat(Block):
                 result_list.append(source_result)
                 
         return result_list
+
+class Mesh(Block):
+    cacheable = False
+    
+    def process(self, data: Any, context: Any) -> Any:
+        # Meshes results from multiple sources into a dictionary based on mapping
+        mapping = self.config.get('mapping', {})
+        if not mapping:
+             return {}
+        
+        from .runner import PipelineRunner
+        
+        result_dict = {}
+        
+        for key, source_def in mapping.items():
+            source_result = None
+            
+            # Handle list of steps directly (most likely for mesh mapping)
+            # mapping: key: [list of steps]
+            if isinstance(source_def, list):
+                 # Assume it's a pipeline definition (list of steps)
+                 runner = PipelineRunner(source_def, context.block_registry)
+                 source_result = runner.run(verbose=False)
+            
+            elif isinstance(source_def, dict):
+                # Single block or explicit 'steps' dict
+                if 'steps' in source_def:
+                    runner = PipelineRunner(source_def['steps'], context.block_registry)
+                    source_result = runner.run(verbose=False)
+                elif 'type' in source_def:
+                    stype = source_def.get('type')
+                    sconfig = source_def.get('config', {})
+                    
+                    if stype not in context.block_registry:
+                        rprint(f"[red]Unknown block type in mesh key '{key}': {stype}[/red]")
+                        continue
+                        
+                    block_cls = context.block_registry[stype]
+                    block = block_cls(sconfig)
+                    source_result = block.process(None, context)
+            
+            result_dict[key] = source_result
+            
+        return result_dict
 
 class JsonParser(Block):
     def process(self, data: Any, context: Any) -> Any:
