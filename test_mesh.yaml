@@ -2,8 +2,10 @@
   config:
     mapping:
       users:
-        - type: csv_source
-          config: { path: ./dummy.csv }
+        steps:
+          - type: file_source
+            config: { path: ./dummy.csv }
+          - type: csv_parser
       todo:
         steps:
           - type: http_source

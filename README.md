@@ -81,9 +81,10 @@ Reads data from a CSV file into a list of dictionaries.
 - `path`: (Required) Path to the CSV file.
 
 ```yaml
-- type: csv_source
+- type: file_source
   config:
     path: ./data.csv
+- type: csv_parser
 ```
 
 **`concat`**
@@ -188,6 +189,11 @@ Visualizes the data in the terminal. Prints tables for lists of dictionaries, or
 ```yaml
 - type: print
 ```
+
+**`csv_parser`**
+Parses a CSV/TSV string into a list of dictionaries.
+- `delimiter`: (Optional) Delimiter character. If omitted, attempts to autodetect.
+- `quotechar`: (Optional) Quote character (default `"`).
 
 **`export`**
 Exports the current data to a file.

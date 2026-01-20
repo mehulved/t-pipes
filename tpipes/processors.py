@@ -7,6 +7,7 @@ from rich import print as rprint
 import xmltodict
 import csv
 import os
+import io
 from bs4 import BeautifulSoup
 
 class Concat(Block):
@@ -133,6 +134,33 @@ class HtmlSelector(Block):
         results = [tag.get_text(strip=True) for tag in soup.select(selector)]
         return results
 
+
+class CsvParser(Block):
+    def process(self, data: Any, context: Any) -> Any:
+        if not isinstance(data, str):
+            # Maybe it's already a list?
+            if isinstance(data, list):
+                 return data
+            raise ValueError("CsvParser expects a string input (or already parsed list)")
+            
+        delimiter = self.config.get('delimiter')
+        quotechar = self.config.get('quotechar', '"')
+        
+        # Autodetection
+        if not delimiter:
+            try:
+                # Sample the first few lines
+                sample = '\n'.join(data.splitlines()[:5])
+                dialect = csv.Sniffer().sniff(sample)
+                delimiter = dialect.delimiter
+                # rprint(f"[dim]Autodetected delimiter: {repr(delimiter)}[/dim]")
+            except csv.Error:
+                # Fallback
+                delimiter = ','
+                
+        f = io.StringIO(data)
+        reader = csv.DictReader(f, delimiter=delimiter, quotechar=quotechar)
+        return list(reader)
 
 class Export(Block):
     cacheable = False  # Export is a side-effect, usually we want it to run? Or maybe cache logic handles it?

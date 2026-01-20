@@ -14,3 +14,5 @@ __pycache__/
 .cache/
 .tpipes_registry.json
 output/
+ph.txt
+test_exports_cache.zip

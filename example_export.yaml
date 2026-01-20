@@ -1,6 +1,7 @@
-- type: csv_source
+- type: file_source
   config:
-    path: data/sample.csv
+    path: ./dummy.csv
+- type: csv_parser
 - type: print
 - type: export
   config:

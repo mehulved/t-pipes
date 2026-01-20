@@ -1,6 +1,6 @@
 import unittest
-from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export, Print
-from tpipes.sources import CsvSource, FileSource, HttpSource
+from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export, Print, CsvParser
+from tpipes.sources import FileSource, HttpSource
 import os
 import csv
 import json
@@ -70,24 +70,22 @@ class TestBlocks(unittest.TestCase):
         result = block.process(data, None)
         self.assertEqual(len(result), 2)
 
-    def test_csv_source(self):
-        # Create dummy csv
-        os.makedirs('data_test', exist_ok=True)
-        path = 'data_test/test.csv'
-        with open(path, 'w', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(['id', 'val'])
-            writer.writerow(['1', 'a'])
-            writer.writerow(['2', 'b'])
-            
-        block = CsvSource({'path': path})
-        result = block.process(None, None)
+    def test_csv_parser(self):
+        # Test CsvParser with string input
+        csv_data = "id,val\n1,a\n2,b"
+        
+        block = CsvParser()
+        result = block.process(csv_data, None)
+        
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0]['id'], '1')
         self.assertEqual(result[0]['val'], 'a')
         
-        # Cleanup
-        shutil.rmtree('data_test')
+        # Test autodetection with semicolon
+        csv_semi = "id;val\n1;a\n2;b"
+        result_semi = block.process(csv_semi, None)
+        self.assertEqual(len(result_semi), 2)
+        self.assertEqual(result_semi[1]['val'], 'b')
 
     def test_export_json_csv(self):
         os.makedirs('output_test', exist_ok=True)
