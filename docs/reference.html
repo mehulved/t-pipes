@@ -53,7 +53,7 @@
                     <span class="window-title">file_source</span>
                 </div>
                 <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                    <p>Reads data from a local JSON file.</p>
+                    <p>Reads data from a local file.</p>
                     <ul>
                         <li><code>path</code>: (Required) Path to the file.</li>
                     </ul>
@@ -62,176 +62,186 @@
   config:
     path: ./data.json</code></pre>
             </div>
+        </section>
 
-            <p>Reads data from a CSV file into a list of dictionaries.</p>
-            <ul>
-                <li><code>path</code>: (Required) Path to the CSV file.</li>
-            </ul>
-    </div>
-    <pre><code>- type: csv_source
-  config:
-    path: ./data.csv</code></pre>
-    </div>
-    </section>
-
-    <section id="flow">
-        <h2>Flow Control</h2>
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">concat</span>
-            </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Merges results from multiple sources into a single list. Supports sub-pipelines.</p>
-                <ul>
-                    <li><code>sources</code>: (Required) List of sources to merge.</li>
-                </ul>
-            </div>
-            <pre><code>- type: concat
+        <section id="flow">
+            <h2>Flow Control</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">concat</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Merges results from multiple sources into a single list. Supports sub-pipelines.</p>
+                    <ul>
+                        <li><code>sources</code>: (Required) List of sources to merge.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: concat
   config:
     sources:
-      - type: csv_source
-        config: { path: data.csv }
+      - steps:
+          - type: file_source
+            config: { path: data.csv }
+          - type: csv_parser
       - steps:
          - type: http_source
            config: { url: ... }
          - type: json_parser</code></pre>
-        </div>
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">mesh</span>
             </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Aggregates results from multiple sources into a structured dictionary.</p>
-                <ul>
-                    <li><code>mapping</code>: (Required) Key-value map of result fields to source definitions.</li>
-                </ul>
-            </div>
-            <pre><code>- type: mesh
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">mesh</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Aggregates results from multiple sources into a structured dictionary.</p>
+                    <ul>
+                        <li><code>mapping</code>: (Required) Key-value map of result fields to source definitions.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: mesh
   config:
     mapping:
       users:
-        - type: csv_source
-          config: { path: users.csv }
+        steps:
+          - type: file_source
+            config: { path: users.csv }
+          - type: csv_parser
       rates:
         steps:
          - type: http_source
            config: { url: ... }
          - type: json_parser</code></pre>
-        </div>
-    </section>
+            </div>
+        </section>
 
-    <section id="processors">
-        <h2>Processors</h2>
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">json_parser</span>
+        <section id="processors">
+            <h2>Processors</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">json_parser</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Parses a JSON string into a Python list/dictionary.</p>
+                </div>
+                <pre><code>- type: json_parser</code></pre>
             </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Parses a JSON string into a Python list/dictionary.</p>
-            </div>
-            <pre><code>- type: json_parser</code></pre>
-        </div>
 
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">xml_parser</span>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">csv_parser</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Parses a CSV string into a list of dictionaries.</p>
+                    <ul>
+                        <li><code>delimiter</code>: (Optional) CSV delimiter (autodetected if omitted).</li>
+                        <li><code>quotechar</code>: (Optional) Quote character (default: <code>"</code>).</li>
+                    </ul>
+                </div>
+                <pre><code>- type: csv_parser
+  config:
+    delimiter: ","</code></pre>
             </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Parses XML string into a Python dictionary.</p>
-            </div>
-            <pre><code>- type: xml_parser</code></pre>
-        </div>
 
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">html_selector</span>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">xml_parser</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Parses XML string into a Python dictionary.</p>
+                </div>
+                <pre><code>- type: xml_parser</code></pre>
             </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Extracts text from HTML using CSS selectors.</p>
-                <ul>
-                    <li><code>selector</code>: (Required) CSS selector string (e.g., <code>div.content > p</code>).
-                    </li>
-                </ul>
-            </div>
-            <pre><code>- type: html_selector
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">html_selector</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Extracts text from HTML using CSS selectors.</p>
+                    <ul>
+                        <li><code>selector</code>: (Required) CSS selector string (e.g., <code>div.content > p</code>).
+                        </li>
+                    </ul>
+                </div>
+                <pre><code>- type: html_selector
   config:
      selector: "h1.title"</code></pre>
-        </div>
+            </div>
 
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">filter</span>
-            </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Filters a list of dictionaries based on a criteria.</p>
-                <ul>
-                    <li><code>key</code>: (Required) Key to check. Supports nested keys (e.g.,
-                        <code>user.data.id</code>).
-                    </li>
-                    <li><code>value</code>: (Required) Value to compare against.</li>
-                    <li><code>op</code>: (Optional) <code>eq</code>, <code>contains</code>, or <code>exists</code>.
-                        Default: <code>eq</code>.</li>
-                </ul>
-            </div>
-            <pre><code>- type: filter
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">filter</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Filters a list of dictionaries based on a criteria.</p>
+                    <ul>
+                        <li><code>key</code>: (Required) Key to check. Supports nested keys (e.g.,
+                            <code>user.data.id</code>).
+                        </li>
+                        <li><code>value</code>: (Required) Value to compare against.</li>
+                        <li><code>op</code>: (Optional) <code>eq</code>, <code>contains</code>, or <code>exists</code>.
+                            Default: <code>eq</code>.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: filter
   config:
     key: user.profile.role
     op: eq
     value: admin</code></pre>
-        </div>
+            </div>
 
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">pick</span>
-            </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Extracts specific fields from the data.</p>
-                <ul>
-                    <li><code>key</code>: Single nested key to extract as a value.</li>
-                    <li><code>keys</code>: List of nested keys to extract into a new object.</li>
-                </ul>
-            </div>
-            <pre><code>- type: pick
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">pick</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Extracts specific fields from the data.</p>
+                    <ul>
+                        <li><code>key</code>: Single nested key to extract as a value.</li>
+                        <li><code>keys</code>: List of nested keys to extract into a new object.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: pick
   config:
     key: rates.INR</code></pre>
-        </div>
-    </section>
+            </div>
+        </section>
 
-    <section id="output">
-        <h2>Output</h2>
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">print</span>
+        <section id="output">
+            <h2>Output</h2>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">print</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Visualizes the data in the terminal.</p>
+                </div>
+                <pre><code>- type: print</code></pre>
             </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Visualizes the data in the terminal.</p>
-            </div>
-            <pre><code>- type: print</code></pre>
-        </div>
 
-        <div class="terminal-window">
-            <div class="window-header">
-                <span class="window-title">export</span>
-            </div>
-            <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
-                <p>Exports the current data to a file.</p>
-                <ul>
-                    <li><code>path</code>: (Required) Path to save the file.</li>
-                    <li><code>format</code>: (Optional) <code>json</code>, <code>xml</code>, <code>html</code>, or
-                        <code>csv</code>.
-                    </li>
-                </ul>
-            </div>
-            <pre><code>- type: export
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">export</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Exports the current data to a file.</p>
+                    <ul>
+                        <li><code>path</code>: (Required) Path to save the file.</li>
+                        <li><code>format</code>: (Optional) <code>json</code>, <code>xml</code>, <code>html</code>, or
+                            <code>csv</code>.
+                        </li>
+                    </ul>
+                </div>
+                <pre><code>- type: export
   config:
     format: csv
     path: ./output.csv</code></pre>
-        </div>
-    </section>
+            </div>
+        </section>
 
-    <footer>
-        <p>&copy; 2026 T-Pipes Project. <a href="https://github.com/yourusername/t-pipes">View on GitHub</a></p>
-    </footer>
+        <footer>
+            <p>&copy; 2026 T-Pipes Project. <a href="https://github.com/yourusername/t-pipes">View on GitHub</a></p>
+        </footer>
     </div>
 </body>
 
