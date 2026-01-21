@@ -1,11 +1,11 @@
 # T-Pipes Verification Report
-**Date:** Wed Jan 14 11:13:41 IST 2026
+**Date:** Wed Jan 21 16:18:18 IST 2026
 
 ## Checking: Unit Tests
 Command: `venv/bin/python tests_blocks.py -v`
 
 ```
-test_csv_source (__main__.TestBlocks.test_csv_source) ... ok
+test_csv_parser (__main__.TestBlocks.test_csv_parser) ... ok
 test_export_json_csv (__main__.TestBlocks.test_export_json_csv) ... Exported data to 
 output_test/out.json (json)
 Exported data to 
@@ -29,7 +29,7 @@ ok
 test_xml_parser (__main__.TestBlocks.test_xml_parser) ... ok
 
 ----------------------------------------------------------------------
-Ran 11 tests in 0.024s
+Ran 11 tests in 0.020s
 
 OK
 ```
@@ -288,39 +288,39 @@ Support'
 Command: `venv/bin/python main.py run example_export.yaml --refresh`
 
 ```
-[1] Running csv_source...
-  -> Executed and cached: 0784e480 (List: 3 items)
-[2] Running print...
+[1] Running file_source...
+  -> Executed and cached: beea6384 (Str: 26 chars)
+[2] Running csv_parser...
+  -> Executed and cached: 1de7c9be (List: 2 items)
+[3] Running print...
 ─────── Step Output ───────
 Data type: <class 'list'>, 
 Item type: <class 'dict'>
-Keys: ['id', 'name', 
-'role']
-┏━━━━┳━━━━━━━━━┳━━━━━━━━━━┓
-┃ id ┃ name    ┃ role     ┃
-┡━━━━╇━━━━━━━━━╇━━━━━━━━━━┩
-│ 1  │ Alice   │ Engineer │
-│ 2  │ Bob     │ Designer │
-│ 3  │ Charlie │ Manager  │
-└────┴─────────┴──────────┘
-  -> Executed (List: 3 items)
-[3] Running export...
-Exported data to 
-output/users.json (json)
-  -> Executed (List: 3 items)
+Keys: ['id', 'name']
+┏━━━━━┳━━━━━━━┓
+┃ id  ┃ name  ┃
+┡━━━━━╇━━━━━━━┩
+│ 101 │ Alice │
+│ 102 │ Bob   │
+└─────┴───────┘
+  -> Executed (List: 2 items)
 [4] Running export...
 Exported data to 
-output/users.html (html)
-  -> Executed (List: 3 items)
+output/users.json (json)
+  -> Executed (List: 2 items)
 [5] Running export...
 Exported data to 
-output/users.xml (xml)
-  -> Executed (List: 3 items)
+output/users.html (html)
+  -> Executed (List: 2 items)
 [6] Running export...
+Exported data to 
+output/users.xml (xml)
+  -> Executed (List: 2 items)
+[7] Running export...
 Exported data to 
 output/users_export.csv 
 (csv)
-  -> Executed (List: 3 items)
+  -> Executed (List: 2 items)
 ```
 
 **RESULT:** ✅ PASS
