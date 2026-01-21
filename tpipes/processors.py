@@ -364,3 +364,38 @@ class Print(Block):
             rprint(data)
             
         return data
+
+class Lookup(Block):
+    def process(self, data: Any, context: Any) -> Any:
+        lookup_path = self.config.get('lookup_key')
+        source_path = self.config.get('source_key')
+        
+        if not lookup_path or not source_path:
+             raise ValueError("Lookup block requires 'lookup_key' and 'source_key'")
+             
+        key_val = get_nested_value(data, lookup_path)
+        source_container = get_nested_value(data, source_path)
+        
+        if source_container is None:
+             # Decide if we want to error or return None. 
+             # Block usually shouldn't break pipeline unless critical?
+             # But if expected source is missing, it's likely error.
+             # rprint(f"[red]Source container not found at {source_path}[/red]")
+             return None
+             
+        if not isinstance(source_container, (dict, list)):
+             raise ValueError(f"Source container at '{source_path}' must be dict or list. Got {type(source_container)}")
+             
+        try:
+            if isinstance(source_container, dict):
+                 # key_val might be int or str
+                 return source_container.get(str(key_val))
+            elif isinstance(source_container, list):
+                 idx = int(key_val)
+                 if 0 <= idx < len(source_container):
+                     return source_container[idx]
+        except (ValueError, TypeError):
+            rprint(f"[red]Failed to lookup key '{key_val}' in source[/red]")
+            return None
+            
+        return None

@@ -4,7 +4,7 @@ import sys
 import os
 from tpipes.runner import PipelineRunner
 from tpipes.sources import HttpSource, FileSource
-from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector, Export, Pick, Concat, Mesh, CsvParser
+from tpipes.processors import JsonParser, Filter, Print, XmlParser, HtmlSelector, Export, Pick, Concat, Mesh, CsvParser, Lookup
 from tpipes.registry import PipelineRegistry
 
 BLOCK_REGISTRY = {
@@ -19,7 +19,8 @@ BLOCK_REGISTRY = {
     'filter': Filter,
     'pick': Pick,
     'export': Export,
-    'print': Print
+    'print': Print,
+    'lookup': Lookup
 }
 
 def load_config(path: str):

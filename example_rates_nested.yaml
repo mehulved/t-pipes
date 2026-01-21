@@ -1,14 +1,27 @@
-- type: http_source
+- type: mesh
   config:
-    url: https://api.exchangerate-api.com/v4/latest/USD
-- type: json_parser
+    mapping:
+      currency_code_data:
+        steps:
+          - type: http_source
+            config:
+              url: https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-currency-code.json
+          - type: json_parser
+          - type: filter
+            config: { key: country, value: India }
+          - type: pick
+            config: { key: currency_code }
+      
+      rates_data:
+        steps:
+          - type: http_source
+            config:
+              url: https://api.exchangerate-api.com/v4/latest/USD
+          - type: json_parser
+
+- type: lookup
+  config:
+    lookup_key: currency_code_data.0
+    source_key: rates_data.rates
+
 - type: print
-- type: pick
-  config:
-    keys: 
-      - rates.INR
-- type: print
-- type: export
-  config:
-    format: csv
-    path: ./exchange_rate.csv
