@@ -205,6 +205,23 @@
   config:
     key: rates.INR</code></pre>
             </div>
+
+            <div class="terminal-window">
+                <div class="window-header">
+                    <span class="window-title">lookup</span>
+                </div>
+                <div style="padding: 20px; border-bottom: 1px solid #333; background: #252526; color: #ccc;">
+                    <p>Looks up a value in a dictionary or list based on a key from another part of the data.</p>
+                    <ul>
+                        <li><code>lookup_key</code>: (Required) Path to the key value in the data.</li>
+                        <li><code>source_key</code>: (Required) Path to the source dictionary/list in the data.</li>
+                    </ul>
+                </div>
+                <pre><code>- type: lookup
+  config:
+    lookup_key: user.country_code
+    source_key: rates_data</code></pre>
+            </div>
         </section>
 
         <section id="output">

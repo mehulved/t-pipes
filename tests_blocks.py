@@ -1,5 +1,5 @@
 import unittest
-from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export, Print, CsvParser
+from tpipes.processors import JsonParser, XmlParser, HtmlSelector, Filter, Export, Print, CsvParser, Lookup
 from tpipes.sources import FileSource, HttpSource
 import os
 import csv
@@ -172,6 +172,43 @@ class TestBlocks(unittest.TestCase):
         data = {'test': 123}
         result = block.process(data, None)
         self.assertEqual(result, data)
+
+
+    def test_lookup(self):
+        block = Lookup({'lookup_key': 'key', 'source_key': 'source'})
+        
+        # Test Dict Lookup
+        data = {
+            'key': 'a',
+            'source': {'a': 1, 'b': 2}
+        }
+        result = block.process(data, None)
+        self.assertEqual(result, 1)
+
+        # Test List Lookup
+        data_list = {
+            'key': 1,
+            'source': ['a', 'b', 'c']
+        }
+        result_list = block.process(data_list, None)
+        self.assertEqual(result_list, 'b')
+
+        # Test Missing Key
+        data_missing = {
+            'key': 'z',
+            'source': {'a': 1}
+        }
+        result_missing = block.process(data_missing, None)
+        self.assertIsNone(result_missing)
+
+        # Test Nested Keys
+        block_nested = Lookup({'lookup_key': 'user.id', 'source_key': 'data.users'})
+        data_nested = {
+            'user': {'id': '101'},
+            'data': {'users': {'101': 'Alice'}}
+        }
+        result_nested = block_nested.process(data_nested, None)
+        self.assertEqual(result_nested, 'Alice')
 
 
 if __name__ == '__main__':

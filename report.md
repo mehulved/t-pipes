@@ -1,5 +1,5 @@
 # T-Pipes Verification Report
-**Date:** Wed Jan 21 16:18:18 IST 2026
+**Date:** Wed Jan 21 16:30:47 IST 2026
 
 ## Checking: Unit Tests
 Command: `venv/bin/python tests_blocks.py -v`
@@ -23,13 +23,14 @@ test_filter_eq (__main__.TestBlocks.test_filter_eq) ... ok
 test_html_selector (__main__.TestBlocks.test_html_selector) ... ok
 test_http_source (__main__.TestBlocks.test_http_source) ... ok
 test_json_parser (__main__.TestBlocks.test_json_parser) ... ok
+test_lookup (__main__.TestBlocks.test_lookup) ... ok
 test_print (__main__.TestBlocks.test_print) ... ─────── Step Output ───────
 {'test': 123}
 ok
 test_xml_parser (__main__.TestBlocks.test_xml_parser) ... ok
 
 ----------------------------------------------------------------------
-Ran 11 tests in 0.020s
+Ran 12 tests in 0.017s
 
 OK
 ```
