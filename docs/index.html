@@ -62,6 +62,10 @@
                     <h3>Registry</h3>
                     <p>Save and re-run your favorite pipelines with a simple command.</p>
                 </div>
+                <div class="feature-card">
+                    <h3>Cache Management</h3>
+                    <p>Export and import pipeline caches to share between machines and avoid redundant processing.</p>
+                </div>
             </div>
         </section>
 
@@ -84,6 +88,30 @@ python main.py register example.yaml --name mypipe
 
 # Run registered pipeline
 python main.py run mypipe</code></pre>
+            </div>
+        </section>
+
+        <section id="cache">
+            <h2>Cache Management</h2>
+            <p style="margin-bottom: 20px;">T-Pipes maintains a cache for each pipeline to avoid redundant processing.
+                Share caches between machines to speed up workflows.</p>
+            <div class="terminal-window">
+                <div class="window-header">
+                    <div class="window-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <span class="window-title">bash</span>
+                </div>
+                <pre><code># Force refresh cache
+python main.py run mypipe --refresh
+
+# Export cache to zip file
+python main.py cache export mypipe output.zip
+
+# Import cache from zip file
+python main.py cache import output.zip</code></pre>
             </div>
         </section>
 
